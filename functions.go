@@ -2,23 +2,50 @@ package com
 
 import (
 	"crypto/md5"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
-	"math/rand"
 	"os"
 	"strings"
 )
 
-// 随机串
-func RandString(n int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
+// 创建GUID
+func CreateGUID() string {
+	b := make([]byte, 32)
+	if _, err := io.ReadFull(rand.Reader, b); err != nil {
+		return ""
 	}
-	return string(b)
+
+	return base64.URLEncoding.EncodeToString(b)
+}
+
+// 截取子串
+func SubString(str string, begin, length int) (substr string) {
+	rs := []rune(str)
+	lth := len(rs)
+
+	if begin < 0 {
+		begin = 0
+	}
+	if begin >= lth {
+		begin = lth
+	}
+	end := begin + length
+	if end > lth {
+		end = lth
+	}
+
+	return string(rs[begin:end])
+}
+
+// 创建随机串
+func RandString(n int) string {
+	guid := CreateGUID()
+	return SubString(guid, 0, n)
 }
 
 // 检查用户名
