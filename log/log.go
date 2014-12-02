@@ -56,6 +56,7 @@ import "C"
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 )
 
@@ -173,4 +174,21 @@ func Blueln(a ...interface{}) (n int, err error) {
 	}
 
 	return n, err
+}
+
+// fatal
+
+func Fatalf(format string, v ...interface{}) {
+	Dangerf(format, v...)
+	os.Exit(1)
+}
+
+func Fatal(v ...interface{}) {
+	Dangerln(v...)
+	os.Exit(1)
+}
+
+func Fatalln(v ...interface{}) {
+	Dangerln(v...)
+	os.Exit(1)
 }
