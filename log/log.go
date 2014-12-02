@@ -43,11 +43,11 @@ void console_color_reset(){
 
 #else
 
-void console_color_red()
-void console_color_green();
-void console_color_blue();
-void console_color_yellow();
-void console_color_reset();
+void console_color_red(){}
+void console_color_green(){}
+void console_color_blue(){}
+void console_color_yellow(){}
+void console_color_reset(){}
 
 #endif
 
