@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -151,4 +153,47 @@ func WriteFile(fullpath string, str string) error {
 // 创建文件夹
 func Mkdir(path string) error {
 	return os.Mkdir(path, os.ModePerm)
+}
+
+// 四舍五入
+func Round(val float64, places int) float64 {
+	var t float64
+	f := math.Pow10(places)
+	x := val * f
+	if math.IsInf(x, 0) || math.IsNaN(x) {
+		return val
+	}
+	if x >= 0.0 {
+		t = math.Ceil(x)
+		if (t - x) > 0.50000000001 {
+			t -= 1.0
+		}
+	} else {
+		t = math.Ceil(-x)
+		if (t + x) > 0.50000000001 {
+			t -= 1.0
+		}
+		t = -t
+	}
+	x = t / f
+
+	if !math.IsInf(x, 0) {
+		return x
+	}
+
+	return t
+}
+
+// http GET
+func Get(reqUrl string) (string, error) {
+	response, err := http.Get(reqUrl)
+	if nil != err {
+		return "", err
+	}
+	body, err := ioutil.ReadAll(response.Body)
+	if nil != err {
+		response.Body.Close()
+		return "", err
+	}
+	return string(body), nil
 }
