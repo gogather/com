@@ -197,3 +197,10 @@ func Get(reqUrl string) (string, error) {
 	}
 	return string(body), nil
 }
+
+func Strim(str string) string {
+	str = strings.Replace(str, "\t", "", -1)
+	str = strings.Replace(str, " ", "", -1)
+	str = strings.Replace(str, "\n", "", -1)
+	return str
+}
