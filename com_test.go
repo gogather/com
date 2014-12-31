@@ -24,3 +24,7 @@ func Test_Strim(t *testing.T) {
 		t.Error("failed in Strim")
 	}
 }
+
+func Test_Copy(t *testing.T) {
+	CopyFile("test_copy", "functions.go")
+}
