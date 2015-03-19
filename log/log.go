@@ -76,6 +76,10 @@ func Warnf(format string, v ...interface{}) (n int, err error) {
 	return n, err
 }
 
+func Yellowf(format string, v ...interface{}) (n int, err error) {
+	return Warnf(format, v...)
+}
+
 func Dangerf(format string, v ...interface{}) (n int, err error) {
 	if "windows" == runtime.GOOS {
 		C.console_color_red()
@@ -88,6 +92,10 @@ func Dangerf(format string, v ...interface{}) (n int, err error) {
 	}
 
 	return n, err
+}
+
+func Redf(format string, v ...interface{}) (n int, err error) {
+	return Dangerf(format, v...)
 }
 
 func Finef(format string, v ...interface{}) (n int, err error) {
@@ -104,6 +112,10 @@ func Finef(format string, v ...interface{}) (n int, err error) {
 	return n, err
 }
 
+func Greenf(format string, v ...interface{}) (n int, err error) {
+	return Finef(format, v...)
+}
+
 func Bluef(format string, v ...interface{}) (n int, err error) {
 	if "windows" == runtime.GOOS {
 		C.console_color_blue()
@@ -116,6 +128,10 @@ func Bluef(format string, v ...interface{}) (n int, err error) {
 	}
 
 	return n, err
+}
+
+func Infof(format string, v ...interface{}) (n int, err error) {
+	return Bluef(format, v...)
 }
 
 // line
@@ -134,6 +150,10 @@ func Warnln(a ...interface{}) (n int, err error) {
 	return n, err
 }
 
+func Yellowln(a ...interface{}) (n int, err error) {
+	return Warnln(a...)
+}
+
 func Dangerln(a ...interface{}) (n int, err error) {
 	if "windows" == runtime.GOOS {
 		C.console_color_red()
@@ -146,6 +166,10 @@ func Dangerln(a ...interface{}) (n int, err error) {
 	}
 
 	return n, err
+}
+
+func Redln(a ...interface{}) (n int, err error) {
+	return Dangerln(a...)
 }
 
 func Fineln(a ...interface{}) (n int, err error) {
@@ -162,6 +186,10 @@ func Fineln(a ...interface{}) (n int, err error) {
 	return n, err
 }
 
+func Greenln(a ...interface{}) (n int, err error) {
+	return Fineln(a...)
+}
+
 func Blueln(a ...interface{}) (n int, err error) {
 	if "windows" == runtime.GOOS {
 		C.console_color_blue()
@@ -174,6 +202,10 @@ func Blueln(a ...interface{}) (n int, err error) {
 	}
 
 	return n, err
+}
+
+func Infoln(a ...interface{}) (n int, err error) {
+	return Blueln(a...)
 }
 
 // fatal
