@@ -36,6 +36,11 @@ void console_color_yellow(){
 	set_console_color(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 }
 
+// pink
+void console_color_pink(){
+	set_console_color(0x0d);
+}
+
 // reset -- is white
 void console_color_reset(){
 	set_console_color(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
@@ -47,6 +52,7 @@ void console_color_red(){}
 void console_color_green(){}
 void console_color_blue(){}
 void console_color_yellow(){}
+void console_color_pink(){}
 void console_color_reset(){}
 
 #endif
@@ -134,6 +140,20 @@ func Infof(format string, v ...interface{}) (n int, err error) {
 	return Bluef(format, v...)
 }
 
+func Pinkf(format string, v ...interface{}) (n int, err error) {
+	if "windows" == runtime.GOOS {
+		C.console_color_pink()
+		n, err = fmt.Printf(format, v...)
+		C.console_color_reset()
+	} else {
+		fmt.Printf("\033[0;45m") // blue
+		n, err = fmt.Printf(format, v...)
+		fmt.Printf("\033[0m")
+	}
+
+	return n, err
+}
+
 // line
 
 func Warnln(a ...interface{}) (n int, err error) {
@@ -206,6 +226,20 @@ func Blueln(a ...interface{}) (n int, err error) {
 
 func Infoln(a ...interface{}) (n int, err error) {
 	return Blueln(a...)
+}
+
+func Pinkln(a ...interface{}) (n int, err error) {
+	if "windows" == runtime.GOOS {
+		C.console_color_pink()
+		n, err = fmt.Println(a...)
+		C.console_color_reset()
+	} else {
+		fmt.Printf("\033[0;45m") // blue
+		n, err = fmt.Println(a...)
+		fmt.Printf("\033[0m")
+	}
+
+	return n, err
 }
 
 // fatal
