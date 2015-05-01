@@ -146,7 +146,7 @@ func Pinkf(format string, v ...interface{}) (n int, err error) {
 		n, err = fmt.Printf(format, v...)
 		C.console_color_reset()
 	} else {
-		fmt.Printf("\033[0;45m") // blue
+		fmt.Printf("\033[0;35m") // blue
 		n, err = fmt.Printf(format, v...)
 		fmt.Printf("\033[0m")
 	}
@@ -234,7 +234,7 @@ func Pinkln(a ...interface{}) (n int, err error) {
 		n, err = fmt.Println(a...)
 		C.console_color_reset()
 	} else {
-		fmt.Printf("\033[0;45m") // blue
+		fmt.Printf("\033[0;35m") // blue
 		n, err = fmt.Println(a...)
 		fmt.Printf("\033[0m")
 	}
