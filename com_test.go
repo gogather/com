@@ -28,3 +28,11 @@ func Test_Strim(t *testing.T) {
 func Test_Copy(t *testing.T) {
 	CopyFile("test_copy", "functions.go")
 }
+
+func Test_encode(t *testing.T) {
+	str := HTMLEncode("请")
+	fmt.Println("[HTMLEncode]", str)
+
+	str = Unicode("请")
+	fmt.Println("[Unicode]", str)
+}

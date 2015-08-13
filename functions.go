@@ -12,6 +12,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -219,4 +220,25 @@ func CopyFile(dstName, srcName string) (written int64, err error) {
 	}
 	defer dst.Close()
 	return io.Copy(dst, src)
+}
+
+func Unicode(rs string) string {
+	json := ""
+	for _, r := range rs {
+		rint := int(r)
+		if rint < 128 {
+			json += string(r)
+		} else {
+			json += "\\u" + strconv.FormatInt(int64(rint), 16)
+		}
+	}
+	return json
+}
+
+func HTMLEncode(rs string) string {
+	html := ""
+	for _, r := range rs {
+		html += "&#" + strconv.Itoa(int(r)) + ";"
+	}
+	return html
 }
