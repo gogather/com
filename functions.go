@@ -98,6 +98,18 @@ func ReadFileByte(path string) ([]byte, error) {
 }
 
 // 读取文本文件
+func ReadFileString(path string) (string, error) {
+	fi, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+
+	fd, err := ioutil.ReadAll(fi)
+
+	return string(fd), err
+}
+
+// 读取文本文件
 func ReadFile(path string) string {
 	fi, err := os.Open(path)
 	if err != nil {
