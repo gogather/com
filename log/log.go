@@ -258,3 +258,11 @@ func Fatalln(v ...interface{}) {
 	Dangerln(v...)
 	os.Exit(1)
 }
+
+func Println(a ...interface{}) (n int, err error) {
+	return fmt.Println(a...)
+}
+
+func Printf(format string, v ...interface{}) (n int, err error) {
+	return fmt.Printf(format, v...)
+}
