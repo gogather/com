@@ -16,6 +16,14 @@ import (
 	"strings"
 )
 
+const (
+	_VERSION = "0.1.0307"
+)
+
+func Version() string {
+	return _VERSION
+}
+
 // 创建GUID
 func CreateGUID() string {
 	b := make([]byte, 32)
