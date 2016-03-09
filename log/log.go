@@ -1,13 +1,5 @@
 package log
 
-const (
-	_VERSION = "0.1.0307"
-)
-
-func Version() string {
-	return _VERSION
-}
-
 /*
 #if defined _WIN32
 
@@ -73,6 +65,14 @@ import (
 	"os"
 	"runtime"
 )
+
+const (
+	_VERSION = "0.1.0307"
+)
+
+func Version() string {
+	return _VERSION
+}
 
 // format
 
