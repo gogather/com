@@ -21,7 +21,7 @@ func PathExist(filename string) bool {
 func ReadFileByte(path string) ([]byte, error) {
 	fi, err := os.Open(path)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer fi.Close()
 	return ioutil.ReadAll(fi)
@@ -40,15 +40,15 @@ func ReadFileString(path string) (string, error) {
 }
 
 // 读取文本文件
-func ReadFile(path string) string {
+func ReadFile(path string) (string, error) {
 	fi, err := os.Open(path)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	defer fi.Close()
 	fd, err := ioutil.ReadAll(fi)
 
-	return string(fd)
+	return string(fd), err
 }
 
 // 检查文件或目录是否存在
