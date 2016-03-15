@@ -2,7 +2,6 @@ package com
 
 import (
 	"errors"
-	// "github.com/gogather/com/log"
 	"io"
 	"io/ioutil"
 	"os"

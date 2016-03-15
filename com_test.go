@@ -1,45 +1,44 @@
 package com
 
 import (
-	"fmt"
+	"github.com/gogather/com/log"
+	. "github.com/smartystreets/goconvey/convey"
 	"path/filepath"
 	"testing"
 )
 
-func Test_RandomString(t *testing.T) {
-	fmt.Println("hello: ", RandString(5))
-}
+func Test_Com(t *testing.T) {
+	Convey("Test FileSystem sections", t, func() {
+		Mkdir("tmp")
+		CopyFile(filepath.Join("tmp", "test_copy"), "functions.go")
+		So(FileExist("tmp/test_copy"), ShouldEqual, true)
 
-func Test_Round(t *testing.T) {
-	fmt.Printf("%."+"3"+"f\n", Round(0.12345678, 3))
-}
+		WriteFileWithCreatePath("tmp/ASD/asdfsdfa/file.log", "hello world")
+		So(FileExist("tmp/ASD/asdfsdfa/file.log"), ShouldEqual, true)
+	})
 
-func Test_Strim(t *testing.T) {
-	str := ` hello world
-	hi
-	`
+	Convey("Test String sections", t, func() {
+		So(len(RandString(5)), ShouldEqual, 5)
+		So(Strim(` hello world     `), ShouldEqual, "helloworld")
+		So(HTMLEncode("请"), ShouldEqual, "&#35831;")
+		So(Unicode("请"), ShouldEqual, `\u8bf7`)
+	})
 
-	if "helloworldhi" == Strim(str) {
-		fmt.Println("Strim Passed")
-	} else {
-		t.Error("failed in Strim")
-	}
-}
+	Convey("Test Math sections", t, func() {
+		So(Round(0.12345678, 3), ShouldEqual, 0.123)
+	})
 
-func Test_Copy(t *testing.T) {
-	Mkdir("tmp")
-	CopyFile(filepath.Join("tmp", "test_copy"), "functions.go")
-}
+	Convey("Test Printcolor section", t, func() {
+		log.Warnf("%s%d%f\n", "hello", 123, 0.456)
+		log.Dangerf("%s%d%f\n", "hello", 123, 0.456)
+		log.Finef("%s%d%f\n", "hello", 123, 0.456)
+		log.Bluef("%s%d%f\n", "hello", 123, 0.456)
+		log.Pinkf("%s%d%f\n", "hello", 123, 0.456)
 
-func Test_encode(t *testing.T) {
-	str := HTMLEncode("请")
-	fmt.Println("[HTMLEncode]", str)
-
-	str = Unicode("请")
-	fmt.Println("[Unicode]", str)
-}
-
-func Test_Mkdir(t *testing.T) {
-	err := WriteFileWithCreatePath("tmp/ASD/asdfsdfa/file.log", "hello world")
-	fmt.Println(err)
+		log.Warnln("hello", 123, 0.456)
+		log.Dangerln("hello", 123, 0.456)
+		log.Fineln("hello", 123, 0.456)
+		log.Blueln("hello", 123, 0.456)
+		log.Pinkln("hello", 123, 0.456)
+	})
 }
