@@ -67,16 +67,24 @@ import (
 )
 
 const (
-	_VERSION = "0.1.0307"
+	_VERSION = "0.2.0412"
 )
 
 func Version() string {
 	return _VERSION
 }
 
+var (
+	Debug bool = true
+)
+
 // format
 
 func Warnf(format string, v ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_yellow()
 		n, err = fmt.Printf(format, v...)
@@ -95,6 +103,10 @@ func Yellowf(format string, v ...interface{}) (n int, err error) {
 }
 
 func Dangerf(format string, v ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_red()
 		n, err = fmt.Printf(format, v...)
@@ -113,6 +125,10 @@ func Redf(format string, v ...interface{}) (n int, err error) {
 }
 
 func Finef(format string, v ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_green()
 		n, err = fmt.Printf(format, v...)
@@ -131,6 +147,10 @@ func Greenf(format string, v ...interface{}) (n int, err error) {
 }
 
 func Bluef(format string, v ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_blue()
 		n, err = fmt.Printf(format, v...)
@@ -149,6 +169,10 @@ func Infof(format string, v ...interface{}) (n int, err error) {
 }
 
 func Pinkf(format string, v ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_pink()
 		n, err = fmt.Printf(format, v...)
@@ -165,6 +189,10 @@ func Pinkf(format string, v ...interface{}) (n int, err error) {
 // line
 
 func Warnln(a ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_yellow()
 		n, err = fmt.Println(a...)
@@ -183,6 +211,10 @@ func Yellowln(a ...interface{}) (n int, err error) {
 }
 
 func Dangerln(a ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_red()
 		n, err = fmt.Println(a...)
@@ -201,6 +233,10 @@ func Redln(a ...interface{}) (n int, err error) {
 }
 
 func Fineln(a ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_green()
 		n, err = fmt.Println(a...)
@@ -219,6 +255,10 @@ func Greenln(a ...interface{}) (n int, err error) {
 }
 
 func Blueln(a ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_blue()
 		n, err = fmt.Println(a...)
@@ -237,6 +277,10 @@ func Infoln(a ...interface{}) (n int, err error) {
 }
 
 func Pinkln(a ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	if "windows" == runtime.GOOS {
 		C.console_color_pink()
 		n, err = fmt.Println(a...)
@@ -268,9 +312,17 @@ func Fatalln(v ...interface{}) {
 }
 
 func Println(a ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	return fmt.Println(a...)
 }
 
 func Printf(format string, v ...interface{}) (n int, err error) {
+	if !Debug {
+		return 0,nil
+	}
+
 	return fmt.Printf(format, v...)
 }
