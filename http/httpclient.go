@@ -68,8 +68,8 @@ type HTTPClient struct {
 	client     *http.Client
 }
 
-// NewHTTPClient - new an HTTPClient from cookiePath
-func NewHTTPClient(cookiePath string) *HTTPClient {
+// NewHTTPClientWithCookieFile - new an HTTPClient from cookiePath
+func NewHTTPClientWithCookieFile(cookiePath string) *HTTPClient {
 	hc := &HTTPClient{}
 	hc.cookiePath = cookiePath
 	jar := NewJar()
@@ -88,10 +88,18 @@ func NewHTTPClient(cookiePath string) *HTTPClient {
 	return hc
 }
 
+func NewHTTPClient() *HTTPClient {
+	hc := &HTTPClient{}
+	jar := NewJar()
+	hc.jar = jar
+	hc.client = &http.Client{Transport: nil, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	return hc
+}
+
 func (h *HTTPClient) serialze() {
 	jar := h.jar
 	jsonData, err := com.JsonEncode(jar)
-	if err == nil {
+	if err == nil && h.cookiePath != "" {
 		com.WriteFile(h.cookiePath, string(jsonData))
 	}
 }
