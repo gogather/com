@@ -1,4 +1,4 @@
-// +build linux unix
+// +build linux unix darwin
 
 package log
 
@@ -28,21 +28,30 @@ const (
 
 func init() {
 	Cprintf = func(color uint8, format string, v ...interface{}) (int, error) {
-		fmt.Printf("\033[1;"+"%d"+"m", color)
-		n, err = fmt.Printf(format, v...)
-		fmt.Printf("\033[0m")
-		return n, err
+		if color > 37 {
+			color = color - 8
+			fmt.Printf("\033[0;%d;1m", color)
+			n, err := fmt.Printf(format, v...)
+			fmt.Printf("\033[0m")
+			return n, err
+		} else {
+			fmt.Printf("\033[1;%d;1m", color)
+			n, err := fmt.Printf(format, v...)
+			fmt.Printf("\033[0m")
+			return n, err
+		}
+
 	}
 	Cprintln = func(color uint8, v ...interface{}) (int, error) {
 		if color > 37 {
 			color = color - 8
-			fmt.Printf("\033[1;"+"%d"+"m", color)
-			n, err = fmt.Println(v...)
+			fmt.Printf("\033[0;%d;1m", color)
+			n, err := fmt.Println(v...)
 			fmt.Printf("\033[0m")
 			return n, err
 		} else {
-			fmt.Printf("\033[0;"+"%d"+"m", color)
-			n, err = fmt.Println(v...)
+			fmt.Printf("\033[1;%d;1m", color)
+			n, err := fmt.Println(v...)
 			fmt.Printf("\033[0m")
 			return n, err
 		}
