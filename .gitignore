@@ -1,2 +1,9 @@
 # test
 /tmp
+
+# vscode
+.vscode/
+
+# bin
+debug
+
