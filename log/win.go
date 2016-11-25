@@ -40,6 +40,7 @@ void void reset_color(){}
 import "C"
 import (
 	"fmt"
+	"sync"
 )
 
 const (
@@ -62,17 +63,25 @@ const (
 	WHITE  = 0xF
 )
 
+var (
+	mutex = new(sync.Mutex)
+)
+
 func init() {
 	Cprintf = func(color uint8, format string, v ...interface{}) (int, error) {
+		mutex.Lock()
 		C.set_console_color(C.WORD(color))
 		n, err := fmt.Printf(format, v...)
 		C.reset_color()
+		mutex.Unlock()
 		return n, err
 	}
 	Cprintln = func(color uint8, v ...interface{}) (int, error) {
+		mutex.Lock()
 		C.set_console_color(C.WORD(color))
 		n, err := fmt.Println(v...)
 		C.reset_color()
+		mutex.Unlock()
 		return n, err
 	}
 }
