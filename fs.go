@@ -3,6 +3,7 @@ package com
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -11,16 +12,18 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/toolkits/file"
 )
 
-// 检查文件或目录是否存在
+// PathExist 检查文件或目录是否存在
 // 如果由 filename 指定的文件或目录存在则返回 true，否则返回 false
 func PathExist(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil || os.IsExist(err)
 }
 
-// 读取文件
+// ReadFileByte 读取文件
 func ReadFileByte(path string) ([]byte, error) {
 	fi, err := os.Open(path)
 	if err != nil {
@@ -30,7 +33,7 @@ func ReadFileByte(path string) ([]byte, error) {
 	return ioutil.ReadAll(fi)
 }
 
-// 读取文本文件
+// ReadFileString 读取文本文件
 func ReadFileString(path string) (string, error) {
 	fi, err := os.Open(path)
 	if err != nil {
@@ -42,7 +45,7 @@ func ReadFileString(path string) (string, error) {
 	return string(fd), err
 }
 
-// 读取文本文件
+// ReadFile 读取文本文件
 func ReadFile(path string) (string, error) {
 	fi, err := os.Open(path)
 	if err != nil {
@@ -54,20 +57,20 @@ func ReadFile(path string) (string, error) {
 	return string(fd), err
 }
 
-// 检查文件或目录是否存在
+// FileExist 检查文件或目录是否存在
 // 如果由 filename 指定的文件或目录存在则返回 true，否则返回 false
 func FileExist(filename string) bool {
 	_, err := os.Stat(filename)
 	return err == nil || os.IsExist(err)
 }
 
-// 字符串写入文件
+// WriteFile 字符串写入文件
 func WriteFile(fullpath string, str string) error {
 	data := []byte(str)
 	return ioutil.WriteFile(fullpath, data, 0644)
 }
 
-// 创建文件夹
+// Mkdir 创建文件夹
 func Mkdir(path string) error {
 	return os.Mkdir(path, os.ModePerm)
 }
@@ -174,4 +177,10 @@ func homeWindows() (string, error) {
 	}
 
 	return home, nil
+}
+
+// Dir 获取路径所在目录
+func Dir(fullpath string) string {
+	unixPath := strings.Replace(fullpath, fmt.Sprintf("%c", filepath.Separator), "/", -1)
+	return strings.Replace(file.Dir(unixPath), "/", fmt.Sprintf("%c", filepath.Separator), -1)
 }
