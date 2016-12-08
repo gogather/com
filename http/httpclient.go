@@ -9,8 +9,14 @@ import (
 
 	"golang.org/x/net/proxy"
 
+	"os"
+	"path/filepath"
+
+	"io"
+
 	"github.com/gogather/com"
 	"github.com/gogather/com/log"
+	"github.com/toolkits/file"
 )
 
 // Jar - cookie jar
@@ -172,4 +178,27 @@ func (h *HTTPClient) Get(urlstr string) (string, error) {
 	}
 	h.serialze()
 	return string(b), err
+}
+
+// Download download file to path
+func (h *HTTPClient) Download(urlstr, path string) error {
+	var err error
+	directory := filepath.Dir(path)
+	if !file.IsExist(directory) {
+		err = os.MkdirAll(directory, 0755)
+		if err != nil {
+			return err
+		}
+	}
+	resp, err := h.client.Get(urlstr)
+	if err != nil {
+		return err
+	}
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(file, resp.Body)
+	return err
 }
