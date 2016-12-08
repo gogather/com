@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"sync"
 
+	"golang.org/x/net/proxy"
+
 	"github.com/gogather/com"
 	"github.com/gogather/com/log"
 )
@@ -70,6 +72,16 @@ type HTTPClient struct {
 
 // NewHTTPClientWithCookieFile - new an HTTPClient from cookiePath
 func NewHTTPClientWithCookieFile(cookiePath string) *HTTPClient {
+	return newHTTPClientWithCookieFileAndTransport(cookiePath, nil)
+}
+
+// NewProxyHTTPClientWithCookieFile - new a proxy HTTPClient from cookiePath
+func NewProxyHTTPClientWithCookieFile(cookiePath, proxyAddr string) *HTTPClient {
+	transport := newProxyTransport(proxyAddr)
+	return newHTTPClientWithCookieFileAndTransport(cookiePath, transport)
+}
+
+func newHTTPClientWithCookieFileAndTransport(cookiePath string, transport *http.Transport) *HTTPClient {
 	hc := &HTTPClient{}
 	hc.cookiePath = cookiePath
 	jar := NewJar()
@@ -83,17 +95,42 @@ func NewHTTPClientWithCookieFile(cookiePath string) *HTTPClient {
 
 	hc.jar = jar
 
-	hc.client = &http.Client{Transport: nil, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	hc.client = &http.Client{Transport: transport, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
 
 	return hc
 }
 
+// NewHTTPClient new an http client
 func NewHTTPClient() *HTTPClient {
+	return newHTTPClient(nil)
+}
+
+// NewProxyHTTPClient new a proxy http client
+func NewProxyHTTPClient(proxyAddr string) *HTTPClient {
+	transport := newProxyTransport(proxyAddr)
+	return newHTTPClient(transport)
+}
+
+func newHTTPClient(transport *http.Transport) *HTTPClient {
 	hc := &HTTPClient{}
 	jar := NewJar()
 	hc.jar = jar
-	hc.client = &http.Client{Transport: nil, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	hc.client = &http.Client{Transport: transport, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
 	return hc
+}
+
+func newProxyTransport(proxyAddr string) *http.Transport {
+	tbProxyURL, err := url.Parse(proxyAddr)
+	if err != nil {
+		log.Warnf("Failed to parse proxy URL: %v\n", err)
+	}
+
+	tbDialer, err := proxy.FromURL(tbProxyURL, proxy.Direct)
+	if err != nil {
+		log.Warnf("Failed to obtain proxy dialer: %v\n", err)
+	}
+
+	return &http.Transport{Dial: tbDialer.Dial}
 }
 
 func (h *HTTPClient) serialze() {
