@@ -202,3 +202,8 @@ func (h *HTTPClient) Download(urlstr, path string) error {
 	_, err = io.Copy(file, resp.Body)
 	return err
 }
+
+// Do http client do method
+func (h *HTTPClient) Do(r *http.Request) (*http.Response, error) {
+	return h.client.Do(r)
+}
