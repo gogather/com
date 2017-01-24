@@ -121,7 +121,11 @@ func newHTTPClient(transport *http.Transport) *HTTPClient {
 	hc := &HTTPClient{}
 	jar := NewJar()
 	hc.jar = jar
-	hc.client = &http.Client{Transport: transport, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	if transport == nil {
+		hc.client = &http.Client{Transport: nil, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	} else {
+		hc.client = &http.Client{Transport: transport, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	}
 	return hc
 }
 
