@@ -121,7 +121,11 @@ func newHTTPClient(transport *http.Transport) *HTTPClient {
 	hc := &HTTPClient{}
 	jar := NewJar()
 	hc.jar = jar
-	hc.client = &http.Client{Transport: transport, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	if transport == nil {
+		hc.client = &http.Client{Transport: nil, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	} else {
+		hc.client = &http.Client{Transport: transport, CheckRedirect: nil, Jar: hc.jar, Timeout: 0}
+	}
 	return hc
 }
 
@@ -201,4 +205,9 @@ func (h *HTTPClient) Download(urlstr, path string) error {
 
 	_, err = io.Copy(file, resp.Body)
 	return err
+}
+
+// Do http client do method
+func (h *HTTPClient) Do(r *http.Request) (*http.Response, error) {
+	return h.client.Do(r)
 }

@@ -70,18 +70,18 @@ var (
 func init() {
 	Cprintf = func(color uint8, format string, v ...interface{}) (int, error) {
 		mutex.Lock()
+		defer mutex.Unlock()
 		C.set_console_color(C.WORD(color))
 		n, err := fmt.Printf(format, v...)
 		C.reset_color()
-		mutex.Unlock()
 		return n, err
 	}
 	Cprintln = func(color uint8, v ...interface{}) (int, error) {
 		mutex.Lock()
+		defer mutex.Unlock()
 		C.set_console_color(C.WORD(color))
 		n, err := fmt.Println(v...)
 		C.reset_color()
-		mutex.Unlock()
 		return n, err
 	}
 }
