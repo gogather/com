@@ -198,6 +198,7 @@ func (h *HTTPClient) Download(urlstr, path string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println(urlstr, resp.Status)
 	file, err := os.Create(path)
 	if err != nil {
 		return err
