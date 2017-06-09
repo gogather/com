@@ -204,6 +204,7 @@ func (h *HTTPClient) Download(urlstr, path string) error {
 	}
 
 	_, err = io.Copy(file, resp.Body)
+	file.Sync()
 	return err
 }
 
