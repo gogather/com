@@ -206,7 +206,14 @@ func (h *HTTPClient) Download(urlstr, path string) error {
 	}
 
 	_, err = io.Copy(file, resp.Body)
-	file.Sync()
+	if err!=nil {
+		fmt.Println("io copy error")
+		return err
+	}
+	err = file.Sync()
+	if err != nil {
+		fmt.Println("io sync error")
+	}
 	return err
 }
 
