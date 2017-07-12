@@ -39,9 +39,8 @@ func ReadFileString(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
+	defer fi.Close()
 	fd, err := ioutil.ReadAll(fi)
-
 	return string(fd), err
 }
 

@@ -7,3 +7,5 @@
 # bin
 debug
 
+# idea
+.idea/
