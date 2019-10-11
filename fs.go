@@ -1,7 +1,9 @@
 package com
 
 import (
+	"archive/tar"
 	"bytes"
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"io"
@@ -214,4 +216,62 @@ func homeWindows() (string, error) {
 func Dir(fullpath string) string {
 	unixPath := strings.Replace(fullpath, fmt.Sprintf("%c", filepath.Separator), "/", -1)
 	return strings.Replace(filepath.Dir(unixPath), "/", fmt.Sprintf("%c", filepath.Separator), -1)
+}
+
+//解压 tar.gz
+func UnpackTar(fpath string, dist string) error {
+	if fpath == "" {
+		return fmt.Errorf("empty input")
+	}
+
+	_ = os.Mkdir(dist, 0755)
+
+	f, err := os.Open(fpath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	gzf, err := gzip.NewReader(f)
+	if err != nil {
+		return err
+	}
+
+	tarReader := tar.NewReader(gzf)
+
+	for true {
+		header, err := tarReader.Next()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return err
+		}
+
+		name := filepath.Join(dist, header.Name)
+
+		switch header.Typeflag {
+		case tar.TypeDir:
+			if err := os.MkdirAll(name, header.FileInfo().Mode()); err != nil {
+				return err
+			}
+		case tar.TypeReg:
+			outFile, err := os.Create(name)
+			if err != nil {
+				return err
+			}
+			defer outFile.Close()
+			if _, err := io.Copy(outFile, tarReader); err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf(
+				"ExtractTarGz: uknown type: %d in %s",
+				header.Typeflag,
+				name)
+		}
+	}
+	return nil
 }
