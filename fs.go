@@ -4,10 +4,13 @@ import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
@@ -274,4 +277,19 @@ func UnpackTar(fpath string, dist string) error {
 		}
 	}
 	return nil
+}
+
+// 计算文件MD5
+func FileMD5(fpath string) string {
+	file, err := os.OpenFile(fpath, os.O_RDONLY, 0755)
+	if err != nil {
+		log.Println("get md5 err:", err.Error())
+		return ""
+	}
+	defer file.Close()
+
+	buf := md5.New()
+	io.Copy(buf, file)
+
+	return hex.EncodeToString(buf.Sum(nil))
 }
