@@ -2,17 +2,18 @@ package com
 
 import (
 	"crypto/md5"
-	"crypto/sha1"
 	"crypto/rand"
+	"crypto/sha1"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"io"
 	"strconv"
 	"strings"
+	"unsafe"
 )
 
-// 创建GUID
+// CreateGUID 创建GUID
 func CreateGUID() string {
 	b := make([]byte, 32)
 	if _, err := io.ReadFull(rand.Reader, b); err != nil {
@@ -22,7 +23,7 @@ func CreateGUID() string {
 	return base64.URLEncoding.EncodeToString(b)
 }
 
-// 截取子串
+// SubString 截取子串
 func SubString(str string, begin, length int) (substr string) {
 	rs := []rune(str)
 	lth := len(rs)
@@ -41,13 +42,13 @@ func SubString(str string, begin, length int) (substr string) {
 	return string(rs[begin:end])
 }
 
-// 创建随机串
+// RandString 创建随机串
 func RandString(n int) string {
 	guid := CreateGUID()
 	return SubString(guid, 0, n)
 }
 
-// 检查用户名
+// CheckUsername 检查用户名
 func CheckUsername(username string) bool {
 	if username[0] >= '0' && username[0] <= '9' {
 		return false
@@ -65,19 +66,21 @@ func CheckUsername(username string) bool {
 	return true
 }
 
+// Md5 MD5加密
 func Md5(value string) string {
 	h := md5.New()
 	h.Write([]byte(value))
 	return fmt.Sprintf("%s", hex.EncodeToString(h.Sum(nil)))
 }
 
-// 对字符串进行sha1 计算
+// Sha1 对字符串进行sha1 计算
 func Sha1(data string) string {
 	t := sha1.New()
 	io.WriteString(t, data)
 	return fmt.Sprintf("%x", t.Sum(nil))
 }
 
+// Strim 去除空白符
 func Strim(str string) string {
 	str = strings.Replace(str, "\t", "", -1)
 	str = strings.Replace(str, " ", "", -1)
@@ -86,6 +89,7 @@ func Strim(str string) string {
 	return str
 }
 
+// Unicode 转 unicode 编码
 func Unicode(rs string) string {
 	json := ""
 	for _, r := range rs {
@@ -99,10 +103,23 @@ func Unicode(rs string) string {
 	return json
 }
 
+// HTMLEncode 对字符串进行HTML编码
 func HTMLEncode(rs string) string {
 	html := ""
 	for _, r := range rs {
 		html += "&#" + strconv.Itoa(int(r)) + ";"
 	}
 	return html
+}
+
+// StringToBytes converts string to byte slice without a memory allocation.
+// For more details, see https://github.com/golang/go/issues/53003#issuecomment-1140276077.
+func StringToBytes(s string) []byte {
+	return *(*[]byte)(unsafe.Pointer(&s))
+}
+
+// BytesToString converts byte slice to string without a memory allocation.
+// For more details, see https://github.com/golang/go/issues/53003#issuecomment-1140276077.
+func BytesToString(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
 }
