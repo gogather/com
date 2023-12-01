@@ -105,7 +105,7 @@ func CopyFile(dstName, srcName string) (written int64, err error) {
 		return
 	}
 	defer src.Close()
-	dst, err := os.OpenFile(dstName, os.O_WRONLY|os.O_CREATE, 0644)
+	dst, err := os.OpenFile(dstName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return
 	}
@@ -221,7 +221,7 @@ func Dir(fullpath string) string {
 	return strings.Replace(filepath.Dir(unixPath), "/", fmt.Sprintf("%c", filepath.Separator), -1)
 }
 
-//解压 tar.gz
+// 解压 tar.gz
 func UnpackTar(fpath string, dist string) error {
 	if fpath == "" {
 		return fmt.Errorf("empty input")
