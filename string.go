@@ -123,3 +123,36 @@ func StringToBytes(s string) []byte {
 func BytesToString(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
+
+func UniqueStrings(input []string) []string {
+	uniqueMap := make(map[string]struct{})
+	var result []string
+
+	for _, str := range input {
+		if _, exists := uniqueMap[str]; !exists {
+			uniqueMap[str] = struct{}{}
+			result = append(result, str)
+		}
+	}
+
+	return result
+}
+
+func ContainsString(slice []string, str string) bool {
+	for _, item := range slice {
+		if item == str {
+			return true
+		}
+	}
+	return false
+}
+
+func RemoveString(slice []string, str string) []string {
+	var result []string
+	for _, item := range slice {
+		if item != str {
+			result = append(result, item)
+		}
+	}
+	return result
+}
