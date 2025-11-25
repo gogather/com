@@ -36,17 +36,17 @@ func Encode(number int) string {
 // converts base62 token to int
 func Decode(token string) int {
   number := 0
-  idx    := 0.0
+  index    := 0.0
   chars  := []byte(alphabet)
 
   charsLength := float64(len(chars))
   tokenLength := float64(len(token))
 
-  for _, c := range []byte(token) {
-    power := tokenLength - (idx + 1)
-    index := bytes.IndexByte(chars, c)
-    number += index * int(math.Pow(charsLength, power))
-    idx++
+  for _, char := range []byte(token) {
+    power := tokenLength - (index + 1)
+    charIndex := bytes.IndexByte(chars, char)
+    number += charIndex * int(math.Pow(charsLength, power))
+    index++
   }
 
   return number
