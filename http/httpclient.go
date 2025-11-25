@@ -22,7 +22,7 @@ import (
 
 // Jar - cookie jar
 type Jar struct {
-	lk          sync.Mutex
+	lock        sync.Mutex
 	CookiesData map[string][]*http.Cookie
 }
 
@@ -33,41 +33,41 @@ func NewJar() *Jar {
 	return jar
 }
 
-func (j *Jar) addCookie(host string, cookie *http.Cookie) {
-	hostCookiesData, ok := j.CookiesData[host]
+func (jar *Jar) addCookie(host string, cookie *http.Cookie) {
+	hostCookiesData, ok := jar.CookiesData[host]
 	if ok {
-		finded := false
+		found := false
 		for i := 0; i < len(hostCookiesData); i++ {
-			c := hostCookiesData[i]
-			if c.Name == cookie.Name {
+			existingCookie := hostCookiesData[i]
+			if existingCookie.Name == cookie.Name {
 				hostCookiesData[i] = cookie
-				finded = true
+				found = true
 			}
 		}
 
-		if !finded {
+		if !found {
 			hostCookiesData = append(hostCookiesData, cookie)
 		}
 
-		j.CookiesData[host] = hostCookiesData
+		jar.CookiesData[host] = hostCookiesData
 	} else {
-		j.CookiesData[host] = append(hostCookiesData, cookie)
+		jar.CookiesData[host] = append(hostCookiesData, cookie)
 	}
 
 }
 
 // SetCookies - set cookies
-func (j *Jar) SetCookies(u *url.URL, cookies []*http.Cookie) {
-	j.lk.Lock()
+func (jar *Jar) SetCookies(u *url.URL, cookies []*http.Cookie) {
+	jar.lock.Lock()
 	for i := 0; i < len(cookies); i++ {
-		j.addCookie(u.Host, cookies[i])
+		jar.addCookie(u.Host, cookies[i])
 	}
-	j.lk.Unlock()
+	jar.lock.Unlock()
 }
 
 // Cookies - get cookie
-func (j *Jar) Cookies(u *url.URL) []*http.Cookie {
-	return j.CookiesData[u.Host]
+func (jar *Jar) Cookies(u *url.URL) []*http.Cookie {
+	return jar.CookiesData[u.Host]
 }
 
 // HTTPClient - http client
@@ -144,49 +144,49 @@ func newProxyTransport(proxyAddr string) *http.Transport {
 	return &http.Transport{Dial: tbDialer.Dial}
 }
 
-func (h *HTTPClient) serialze() {
-	jar := h.jar
+func (httpClient *HTTPClient) serialize() {
+	jar := httpClient.jar
 	jsonData, err := com.JsonEncode(jar)
-	if err == nil && h.cookiePath != "" {
-		com.WriteFile(h.cookiePath, string(jsonData))
+	if err == nil && httpClient.cookiePath != "" {
+		com.WriteFile(httpClient.cookiePath, string(jsonData))
 	}
 }
 
 // Post - post method
-func (h *HTTPClient) Post(urlstr string, parm url.Values) (string, error) {
-	resp, err := h.client.PostForm(urlstr, parm)
+func (httpClient *HTTPClient) Post(urlstr string, parm url.Values) (string, error) {
+	resp, err := httpClient.client.PostForm(urlstr, parm)
 
 	if err != nil {
 		return "", err
 	}
 
-	b, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
 		return "", err
 	}
-	h.serialze()
-	return string(b), err
+	httpClient.serialize()
+	return string(body), err
 }
 
 // Get - get method
-func (h *HTTPClient) Get(urlstr string) (string, error) {
-	resp, err := h.client.Get(urlstr)
+func (httpClient *HTTPClient) Get(urlstr string) (string, error) {
+	resp, err := httpClient.client.Get(urlstr)
 	if err != nil {
 		return "", err
 	}
 
-	b, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {
 		return "", err
 	}
-	h.serialze()
-	return string(b), err
+	httpClient.serialize()
+	return string(body), err
 }
 
 // Download download file to path
-func (h *HTTPClient) Download(urlstr, path string) error {
+func (httpClient *HTTPClient) Download(urlstr, path string) error {
 	var err error
 	directory := filepath.Dir(path)
 	if !file.IsExist(directory) {
@@ -195,22 +195,22 @@ func (h *HTTPClient) Download(urlstr, path string) error {
 			return err
 		}
 	}
-	resp, err := h.client.Get(urlstr)
+	resp, err := httpClient.client.Get(urlstr)
 	if err != nil {
 		return err
 	}
 	fmt.Println(urlstr, resp.Status)
-	file, err := os.Create(path)
+	outputFile, err := os.Create(path)
 	if err != nil {
 		return err
 	}
 
-	_, err = io.Copy(file, resp.Body)
+	_, err = io.Copy(outputFile, resp.Body)
 	if err!=nil {
 		fmt.Println("io copy error")
 		return err
 	}
-	err = file.Sync()
+	err = outputFile.Sync()
 	if err != nil {
 		fmt.Println("io sync error")
 	}
@@ -218,6 +218,6 @@ func (h *HTTPClient) Download(urlstr, path string) error {
 }
 
 // Do http client do method
-func (h *HTTPClient) Do(r *http.Request) (*http.Response, error) {
-	return h.client.Do(r)
+func (httpClient *HTTPClient) Do(request *http.Request) (*http.Response, error) {
+	return httpClient.client.Do(request)
 }

@@ -26,153 +26,153 @@ var (
 	Debug bool = true
 )
 
-func Warnf(format string, v ...interface{}) (n int, err error) {
+func Warnf(format string, values ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
-	n, err = Cprintf(YELLOW, format, v...)
-	return n, err
+	bytesWritten, err = Cprintf(YELLOW, format, values...)
+	return bytesWritten, err
 }
 
-func Yellowf(format string, v ...interface{}) (n int, err error) {
-	return Warnf(format, v...)
+func Yellowf(format string, values ...interface{}) (bytesWritten int, err error) {
+	return Warnf(format, values...)
 }
 
-func Dangerf(format string, v ...interface{}) (n int, err error) {
+func Dangerf(format string, values ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
-	n, err = Cprintf(RED, format, v...)
-	return n, err
+	bytesWritten, err = Cprintf(RED, format, values...)
+	return bytesWritten, err
 }
 
-func Redf(format string, v ...interface{}) (n int, err error) {
-	return Dangerf(format, v...)
+func Redf(format string, values ...interface{}) (bytesWritten int, err error) {
+	return Dangerf(format, values...)
 }
 
-func Finef(format string, v ...interface{}) (n int, err error) {
+func Finef(format string, values ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
-	n, err = Cprintf(GREEN, format, v...)
-	return n, err
+	bytesWritten, err = Cprintf(GREEN, format, values...)
+	return bytesWritten, err
 }
 
-func Greenf(format string, v ...interface{}) (n int, err error) {
-	return Finef(format, v...)
+func Greenf(format string, values ...interface{}) (bytesWritten int, err error) {
+	return Finef(format, values...)
 }
 
-func Bluef(format string, v ...interface{}) (n int, err error) {
+func Bluef(format string, values ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
-	n, err = Cprintf(BLUE, format, v...)
-	return n, err
+	bytesWritten, err = Cprintf(BLUE, format, values...)
+	return bytesWritten, err
 }
 
-func Infof(format string, v ...interface{}) (n int, err error) {
-	return Bluef(format, v...)
+func Infof(format string, values ...interface{}) (bytesWritten int, err error) {
+	return Bluef(format, values...)
 }
 
-func Pinkf(format string, v ...interface{}) (n int, err error) {
+func Pinkf(format string, values ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
-	n, err = Cprintf(PINK, format, v...)
-	return n, err
+	bytesWritten, err = Cprintf(PINK, format, values...)
+	return bytesWritten, err
 }
 
 // line
 
-func Warnln(a ...interface{}) (n int, err error) {
+func Warnln(args ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
-	n, err = Cprintln(YELLOW, a...)
-	return n, err
+	bytesWritten, err = Cprintln(YELLOW, args...)
+	return bytesWritten, err
 }
 
-func Yellowln(a ...interface{}) (n int, err error) {
-	return Warnln(a...)
+func Yellowln(args ...interface{}) (bytesWritten int, err error) {
+	return Warnln(args...)
 }
 
-func Dangerln(a ...interface{}) (n int, err error) {
-	if !Debug {
-		return 0, nil
-	}
-
-	n, err = Cprintln(RED, a...)
-	return n, err
-}
-
-func Redln(a ...interface{}) (n int, err error) {
-	return Dangerln(a...)
-}
-
-func Fineln(a ...interface{}) (n int, err error) {
+func Dangerln(args ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
 
-	n, err = Cprintln(GREEN, a...)
-	return n, err
+	bytesWritten, err = Cprintln(RED, args...)
+	return bytesWritten, err
 }
 
-func Greenln(a ...interface{}) (n int, err error) {
-	return Fineln(a...)
+func Redln(args ...interface{}) (bytesWritten int, err error) {
+	return Dangerln(args...)
 }
 
-func Blueln(a ...interface{}) (n int, err error) {
+func Fineln(args ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
 
-	n, err = Cprintln(BLUE, a...)
-	return n, err
+	bytesWritten, err = Cprintln(GREEN, args...)
+	return bytesWritten, err
 }
 
-func Infoln(a ...interface{}) (n int, err error) {
-	return Blueln(a...)
+func Greenln(args ...interface{}) (bytesWritten int, err error) {
+	return Fineln(args...)
 }
 
-func Pinkln(a ...interface{}) (n int, err error) {
+func Blueln(args ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
 
-	n, err = Cprintln(PINK, a...)
-	return n, err
+	bytesWritten, err = Cprintln(BLUE, args...)
+	return bytesWritten, err
+}
+
+func Infoln(args ...interface{}) (bytesWritten int, err error) {
+	return Blueln(args...)
+}
+
+func Pinkln(args ...interface{}) (bytesWritten int, err error) {
+	if !Debug {
+		return 0, nil
+	}
+
+	bytesWritten, err = Cprintln(PINK, args...)
+	return bytesWritten, err
 }
 
 // fatal
 
-func Fatalf(format string, v ...interface{}) {
-	Dangerf(format, v...)
+func Fatalf(format string, values ...interface{}) {
+	Dangerf(format, values...)
 	os.Exit(1)
 }
 
-func Fatal(v ...interface{}) {
-	Dangerln(v...)
+func Fatal(values ...interface{}) {
+	Dangerln(values...)
 	os.Exit(1)
 }
 
-func Fatalln(v ...interface{}) {
-	Dangerln(v...)
+func Fatalln(values ...interface{}) {
+	Dangerln(values...)
 	os.Exit(1)
 }
 
-func Println(a ...interface{}) (n int, err error) {
+func Println(args ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
 
-	return fmt.Println(a...)
+	return fmt.Println(args...)
 }
 
-func Printf(format string, v ...interface{}) (n int, err error) {
+func Printf(format string, values ...interface{}) (bytesWritten int, err error) {
 	if !Debug {
 		return 0, nil
 	}
 
-	return fmt.Printf(format, v...)
+	return fmt.Printf(format, values...)
 }

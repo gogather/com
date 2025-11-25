@@ -15,31 +15,31 @@ import (
 
 // CreateGUID 创建GUID
 func CreateGUID() string {
-	b := make([]byte, 32)
-	if _, err := io.ReadFull(rand.Reader, b); err != nil {
+	randomBytes := make([]byte, 32)
+	if _, err := io.ReadFull(rand.Reader, randomBytes); err != nil {
 		return ""
 	}
 
-	return base64.URLEncoding.EncodeToString(b)
+	return base64.URLEncoding.EncodeToString(randomBytes)
 }
 
 // SubString 截取子串
 func SubString(str string, begin, length int) (substr string) {
-	rs := []rune(str)
-	lth := len(rs)
+	runes := []rune(str)
+	runeLength := len(runes)
 
 	if begin < 0 {
 		begin = 0
 	}
-	if begin >= lth {
-		begin = lth
+	if begin >= runeLength {
+		begin = runeLength
 	}
 	end := begin + length
-	if end > lth {
-		end = lth
+	if end > runeLength {
+		end = runeLength
 	}
 
-	return string(rs[begin:end])
+	return string(runes[begin:end])
 }
 
 // RandString 创建随机串
@@ -68,16 +68,16 @@ func CheckUsername(username string) bool {
 
 // Md5 MD5加密
 func Md5(value string) string {
-	h := md5.New()
-	h.Write([]byte(value))
-	return fmt.Sprintf("%s", hex.EncodeToString(h.Sum(nil)))
+	hash := md5.New()
+	hash.Write([]byte(value))
+	return fmt.Sprintf("%s", hex.EncodeToString(hash.Sum(nil)))
 }
 
 // Sha1 对字符串进行sha1 计算
 func Sha1(data string) string {
-	t := sha1.New()
-	io.WriteString(t, data)
-	return fmt.Sprintf("%x", t.Sum(nil))
+	sha1Hash := sha1.New()
+	io.WriteString(sha1Hash, data)
+	return fmt.Sprintf("%x", sha1Hash.Sum(nil))
 }
 
 // Strim 去除空白符
@@ -90,23 +90,23 @@ func Strim(str string) string {
 }
 
 // Unicode 转 unicode 编码
-func Unicode(rs string) string {
-	json := ""
-	for _, r := range rs {
-		rint := int(r)
-		if rint < 128 {
-			json += string(r)
+func Unicode(inputString string) string {
+	result := ""
+	for _, r := range inputString {
+		runeInt := int(r)
+		if runeInt < 128 {
+			result += string(r)
 		} else {
-			json += "\\u" + strconv.FormatInt(int64(rint), 16)
+			result += "\\u" + strconv.FormatInt(int64(runeInt), 16)
 		}
 	}
-	return json
+	return result
 }
 
 // HTMLEncode 对字符串进行HTML编码
-func HTMLEncode(rs string) string {
+func HTMLEncode(inputString string) string {
 	html := ""
-	for _, r := range rs {
+	for _, r := range inputString {
 		html += "&#" + strconv.Itoa(int(r)) + ";"
 	}
 	return html
@@ -114,14 +114,14 @@ func HTMLEncode(rs string) string {
 
 // StringToBytes converts string to byte slice without a memory allocation.
 // For more details, see https://github.com/golang/go/issues/53003#issuecomment-1140276077.
-func StringToBytes(s string) []byte {
-	return *(*[]byte)(unsafe.Pointer(&s))
+func StringToBytes(str string) []byte {
+	return *(*[]byte)(unsafe.Pointer(&str))
 }
 
 // BytesToString converts byte slice to string without a memory allocation.
 // For more details, see https://github.com/golang/go/issues/53003#issuecomment-1140276077.
-func BytesToString(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
+func BytesToString(bytes []byte) string {
+	return *(*string)(unsafe.Pointer(&bytes))
 }
 
 func UniqueStrings(input []string) []string {

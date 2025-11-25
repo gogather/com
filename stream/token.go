@@ -16,29 +16,29 @@ func NewTokenStream[T any](input []T) TokenStream[T] {
 	return &commonTokenStream[T]{tokens: input, pos: -1}
 }
 
-func (s *commonTokenStream[T]) Next() *T {
-	if s.pos < len(s.tokens)-1 {
-		s.pos++
-		return &s.tokens[s.pos]
+func (stream *commonTokenStream[T]) Next() *T {
+	if stream.pos < len(stream.tokens)-1 {
+		stream.pos++
+		return &stream.tokens[stream.pos]
 	}
 	return nil
 }
 
-func (s *commonTokenStream[T]) Prev() *T {
-	if s.pos > 0 {
-		s.pos--
-		return &s.tokens[s.pos]
+func (stream *commonTokenStream[T]) Prev() *T {
+	if stream.pos > 0 {
+		stream.pos--
+		return &stream.tokens[stream.pos]
 	}
 	return nil
 }
 
-func (s *commonTokenStream[T]) Peek() *T {
-	if s.pos < len(s.tokens)-1 {
-		return &s.tokens[s.pos+1]
+func (stream *commonTokenStream[T]) Peek() *T {
+	if stream.pos < len(stream.tokens)-1 {
+		return &stream.tokens[stream.pos+1]
 	}
 	return nil
 }
 
-func (s *commonTokenStream[T]) EOF() bool {
-	return s.pos == len(s.tokens)-1
+func (stream *commonTokenStream[T]) EOF() bool {
+	return stream.pos == len(stream.tokens)-1
 }

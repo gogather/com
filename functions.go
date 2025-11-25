@@ -36,37 +36,37 @@ func TagSplit(keywords string) string {
 }
 
 // 四舍五入
-func Round(val float64, places int) float64 {
-	var t float64
-	f := math.Pow10(places)
-	x := val * f
-	if math.IsInf(x, 0) || math.IsNaN(x) {
-		return val
+func Round(inputValue float64, places int) float64 {
+	var result float64
+	scaleFactor := math.Pow10(places)
+	scaledValue := inputValue * scaleFactor
+	if math.IsInf(scaledValue, 0) || math.IsNaN(scaledValue) {
+		return inputValue
 	}
-	if x >= 0.0 {
-		t = math.Ceil(x)
-		if (t - x) > 0.50000000001 {
-			t -= 1.0
+	if scaledValue >= 0.0 {
+		result = math.Ceil(scaledValue)
+		if (result - scaledValue) > 0.50000000001 {
+			result -= 1.0
 		}
 	} else {
-		t = math.Ceil(-x)
-		if (t + x) > 0.50000000001 {
-			t -= 1.0
+		result = math.Ceil(-scaledValue)
+		if (result + scaledValue) > 0.50000000001 {
+			result -= 1.0
 		}
-		t = -t
+		result = -result
 	}
-	x = t / f
+	scaledValue = result / scaleFactor
 
-	if !math.IsInf(x, 0) {
-		return x
+	if !math.IsInf(scaledValue, 0) {
+		return scaledValue
 	}
 
-	return t
+	return result
 }
 
 // http GET
-func Get(reqUrl string) (string, error) {
-	response, err := http.Get(reqUrl)
+func Get(requestURL string) (string, error) {
+	response, err := http.Get(requestURL)
 	if nil != err {
 		return "", err
 	}

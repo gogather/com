@@ -50,35 +50,35 @@ func PathExist(filename string) bool {
 
 // ReadFileByte 读取文件
 func ReadFileByte(path string) ([]byte, error) {
-	fi, err := os.Open(path)
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-	defer fi.Close()
-	return ioutil.ReadAll(fi)
+	defer file.Close()
+	return ioutil.ReadAll(file)
 }
 
 // ReadFileString 读取文本文件
 func ReadFileString(path string) (string, error) {
-	fi, err := os.Open(path)
+	file, err := os.Open(path)
 	if err != nil {
 		return "", err
 	}
-	defer fi.Close()
-	fd, err := ioutil.ReadAll(fi)
-	return string(fd), err
+	defer file.Close()
+	fileData, err := ioutil.ReadAll(file)
+	return string(fileData), err
 }
 
 // ReadFile 读取文本文件
 func ReadFile(path string) (string, error) {
-	fi, err := os.Open(path)
+	file, err := os.Open(path)
 	if err != nil {
 		return "", err
 	}
-	defer fi.Close()
-	fd, err := ioutil.ReadAll(fi)
+	defer file.Close()
+	fileData, err := ioutil.ReadAll(file)
 
-	return string(fd), err
+	return string(fileData), err
 }
 
 // FileExist 检查文件或目录是否存在
@@ -101,16 +101,16 @@ func WriteFileAppend(fullpath string, str string) error {
 }
 
 func writeFileAppend(filename string, data []byte, perm os.FileMode) error {
-	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, perm)
+	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, perm)
 	if err != nil {
 		return err
 	}
-	n, err := f.Write(data)
-	if err == nil && n < len(data) {
+	bytesWritten, err := file.Write(data)
+	if err == nil && bytesWritten < len(data) {
 		err = io.ErrShortWrite
 	}
-	if err1 := f.Close(); err == nil {
-		err = err1
+	if closeErr := file.Close(); err == nil {
+		err = closeErr
 	}
 	return err
 }
@@ -149,9 +149,9 @@ func MkdirWithCreatePath(fullpath string) error {
 	for i := 0; i < len(dirArray); i++ {
 		dir := dirArray[i]
 		path = path + string(filepath.Separator) + dir
-		p := SubString(path, 1, len(path)-1)
-		if !PathExist(p) {
-			err = Mkdir(p)
+		subPath := SubString(path, 1, len(path)-1)
+		if !PathExist(subPath) {
+			err = Mkdir(subPath)
 		}
 	}
 
@@ -244,25 +244,25 @@ func Dir(fullpath string) string {
 }
 
 // 解压 tar.gz
-func UnpackTar(fpath string, dist string) error {
-	if fpath == "" {
+func UnpackTar(filePath string, destDir string) error {
+	if filePath == "" {
 		return fmt.Errorf("empty input")
 	}
 
-	_ = os.Mkdir(dist, 0755)
+	_ = os.Mkdir(destDir, 0755)
 
-	f, err := os.Open(fpath)
+	file, err := os.Open(filePath)
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer file.Close()
 
-	gzf, err := gzip.NewReader(f)
+	gzipReader, err := gzip.NewReader(file)
 	if err != nil {
 		return err
 	}
 
-	tarReader := tar.NewReader(gzf)
+	tarReader := tar.NewReader(gzipReader)
 
 	for true {
 		header, err := tarReader.Next()
@@ -275,7 +275,7 @@ func UnpackTar(fpath string, dist string) error {
 			return err
 		}
 
-		name := filepath.Join(dist, header.Name)
+		name := filepath.Join(destDir, header.Name)
 
 		switch header.Typeflag {
 		case tar.TypeDir:
@@ -302,18 +302,18 @@ func UnpackTar(fpath string, dist string) error {
 }
 
 // 计算文件MD5
-func FileMD5(fpath string) string {
-	file, err := os.OpenFile(fpath, os.O_RDONLY, 0755)
+func FileMD5(filePath string) string {
+	file, err := os.OpenFile(filePath, os.O_RDONLY, 0755)
 	if err != nil {
 		log.Println("get md5 err:", err.Error())
 		return ""
 	}
 	defer file.Close()
 
-	buf := md5.New()
-	io.Copy(buf, file)
+	hashBuffer := md5.New()
+	io.Copy(hashBuffer, file)
 
-	return hex.EncodeToString(buf.Sum(nil))
+	return hex.EncodeToString(hashBuffer.Sum(nil))
 }
 
 // GenSuid 生成随机短号
@@ -321,11 +321,11 @@ func GenSuid() string {
 	uidMin := base36.Decode("10000000")
 	uidMax := base36.Decode("zzzzzzzz")
 	uid := rand.Intn(int(uidMax-uidMin)) + int(uidMin)
-	b36s := base36.Encode(uint64(uid))
-	mb36b := bytes.Buffer{}
-	for _, c := range b36s {
-		idx := base36map[c]
-		mb36b.WriteRune(base36mix[idx])
+	base36String := base36.Encode(uint64(uid))
+	mixedBase36Buffer := bytes.Buffer{}
+	for _, char := range base36String {
+		idx := base36map[char]
+		mixedBase36Buffer.WriteRune(base36mix[idx])
 	}
-	return strings.ToLower(mb36b.String())
+	return strings.ToLower(mixedBase36Buffer.String())
 }

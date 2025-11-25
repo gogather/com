@@ -9,11 +9,11 @@ import (
 func Tonight() time.Time {
 	now := time.Now()
 	date := fmt.Sprintf("%04d-%02d-%02d", now.Year(), now.Month(), now.Day())
-	pt, _ := time.Parse("2006-01-02", date)
-	return pt
+	parsedTime, _ := time.Parse("2006-01-02", date)
+	return parsedTime
 }
 
 // Days get d days period
-func Days(d int) (time.Duration, error) {
-	return time.ParseDuration(fmt.Sprintf("%dh", d*24))
+func Days(days int) (time.Duration, error) {
+	return time.ParseDuration(fmt.Sprintf("%dh", days*24))
 }

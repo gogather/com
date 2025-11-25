@@ -8,31 +8,31 @@ import (
 
 // json编码
 func JsonEncode(data interface{}) (string, error) {
-	a, err := json.Marshal(data)
-	return string(a), err
+	jsonBytes, err := json.Marshal(data)
+	return string(jsonBytes), err
 }
 
 // json解码
 func JsonDecode(data string) (interface{}, error) {
 	dataByte := []byte(data)
-	var dat interface{}
+	var decoded interface{}
 
-	err := json.Unmarshal(dataByte, &dat)
-	return dat, err
+	err := json.Unmarshal(dataByte, &decoded)
+	return decoded, err
 }
 
 func Encode(data interface{}) ([]byte, error) {
-	buf := bytes.NewBuffer(nil)
-	enc := gob.NewEncoder(buf)
-	err := enc.Encode(data)
+	buffer := bytes.NewBuffer(nil)
+	encoder := gob.NewEncoder(buffer)
+	err := encoder.Encode(data)
 	if err != nil {
 		return nil, err
 	}
-	return buf.Bytes(), nil
+	return buffer.Bytes(), nil
 }
 
 func Decode(data []byte, to interface{}) error {
-	buf := bytes.NewBuffer(data)
-	dec := gob.NewDecoder(buf)
-	return dec.Decode(to)
+	buffer := bytes.NewBuffer(data)
+	decoder := gob.NewDecoder(buffer)
+	return decoder.Decode(to)
 }
