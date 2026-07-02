@@ -1,12 +1,12 @@
 module github.com/gogather/com
 
-go 1.18
+go 1.25.0
 
 require (
 	github.com/martinlindhe/base36 v1.1.1
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/toolkits/file v0.0.0-20160325033739-a5b3c5147e07
-	golang.org/x/net v0.24.0
+	golang.org/x/net v0.55.0
 )
 
 require (
